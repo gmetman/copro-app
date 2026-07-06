@@ -9,8 +9,8 @@ const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 type Option = { id: string; label: string };
 type Lot = Record<string, unknown>;
 
-export default function LotEditForm({ lot, personneOptions, lotOptions }: {
-  lot: Lot; personneOptions: Option[]; lotOptions: Option[];
+export default function LotEditForm({ lot, residentOptions, lotOptions }: {
+  lot: Lot; residentOptions: Option[]; lotOptions: Option[];
 }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
@@ -129,9 +129,9 @@ export default function LotEditForm({ lot, personneOptions, lotOptions }: {
       <hr className="border-gray-100" />
       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Personnes associées</p>
 
-      {selectOpt("proprietaire_id", "Propriétaire", personneOptions, lot.proprietaire_id as string)}
-      {selectOpt("mandataire_id", "Mandataire", personneOptions, lot.mandataire_id as string)}
-      {selectOpt("locataire_id", "Locataire", personneOptions, lot.locataire_id as string)}
+      {selectOpt("proprietaire_id", "Propriétaire", residentOptions, lot.proprietaire_id as string)}
+      {selectOpt("mandataire_id", "Mandataire", residentOptions, lot.mandataire_id as string)}
+      {selectOpt("locataire_id", "Locataire", residentOptions, lot.locataire_id as string)}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 

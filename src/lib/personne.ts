@@ -11,10 +11,13 @@ export type Contact = {
   pays: string | null;
 };
 
+export type Categorie = "RESIDENT" | "FOURNISSEUR";
+
 export type Personne = {
   id: string;
   description: string | null;
   type: "physique" | "morale";
+  categorie: Categorie;
   conseil_syndical: boolean;
   contacts: Contact[];
   created_at: string;
@@ -42,4 +45,14 @@ export const roleColor: Record<Role, string> = {
   "conseil syndical": "bg-yellow-100 text-yellow-700",
   "bailleur":         "bg-orange-100 text-orange-700",
   "résident":         "bg-teal-100 text-teal-700",
+};
+
+export const categorieLabel: Record<Categorie, string> = {
+  RESIDENT:    "Propriétaires & Résidents",
+  FOURNISSEUR: "Fournisseur",
+};
+
+export const categorieColor: Record<Categorie, string> = {
+  RESIDENT:    "bg-indigo-100 text-indigo-700",
+  FOURNISSEUR: "bg-amber-100 text-amber-700",
 };

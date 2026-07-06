@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2 } from "lucide-react";
+import type { Categorie } from "@/lib/personne";
 
 type ContactForm = {
   civilite: "" | "M." | "Mme";
@@ -23,6 +24,7 @@ export default function NouvellePersonnePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [type, setType] = useState<"physique" | "morale">("physique");
+  const [categorie, setCategorie] = useState<Categorie>("RESIDENT");
   const [description, setDescription] = useState("");
   const [contacts, setContacts] = useState<ContactForm[]>([emptyContact()]);
 
@@ -38,7 +40,7 @@ export default function NouvellePersonnePage() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        type, description: description || null,
+        type, categorie, description: description || null,
         contacts: contacts.map((c) => ({ ...c, civilite: c.civilite || null })),
       }),
     });
@@ -59,6 +61,23 @@ export default function NouvellePersonnePage() {
 
         <div className="bg-white rounded-xl border border-gray-200 p-6 space-y-4">
           <h2 className="font-semibold text-gray-800">Informations générales</h2>
+          <div>
+            <label className={labelCls}>Catégorie *</label>
+            <div className="flex gap-3">
+              {(["RESIDENT", "FOURNISSEUR"] as const).map((cat) => (
+                <button
+                  key={cat}
+                  type="button"
+                  onClick={() => setCategorie(cat)}
+                  className={`flex-1 py-2 rounded-lg text-sm font-medium border transition-colors ${
+                    categorie === cat ? "bg-blue-600 text-white border-blue-600" : "border-gray-300 text-gray-600 hover:bg-gray-50"
+                  }`}
+                >
+                  {cat === "RESIDENT" ? "Propriétaires & Résidents" : "Fournisseur"}
+                </button>
+              ))}
+            </div>
+          </div>
           <div>
             <label className={labelCls}>Type *</label>
             <div className="flex gap-3">

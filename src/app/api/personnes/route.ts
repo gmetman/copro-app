@@ -3,12 +3,12 @@ import { supabase } from "@/lib/supabase";
 
 export async function POST(req: Request) {
   try {
-    const { type, description, contacts = [] } = await req.json();
+    const { type, categorie, description, contacts = [] } = await req.json();
     if (!type) return NextResponse.json({ error: "Type requis." }, { status: 400 });
 
     const { data: personne, error } = await supabase
       .from("personnes")
-      .insert({ type, description })
+      .insert({ type, categorie: categorie ?? "RESIDENT", description })
       .select()
       .single();
     if (error) throw error;

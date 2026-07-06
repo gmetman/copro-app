@@ -27,6 +27,7 @@ export default async function IncidentPage({ params }: { params: Promise<{ id: s
     supabase
       .from("personnes")
       .select("id, type, description, contacts(prenom, nom)")
+      .eq("categorie", "FOURNISSEUR")
       .order("created_at"),
   ]);
 

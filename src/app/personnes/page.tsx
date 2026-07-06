@@ -1,5 +1,5 @@
 import { supabase } from "@/lib/supabase";
-import { personneNom, roleColor, type Role } from "@/lib/personne";
+import { personneNom, roleColor, categorieLabel, categorieColor, type Role, type Categorie } from "@/lib/personne";
 import { Plus, Building2, User } from "lucide-react";
 import Link from "next/link";
 
@@ -68,12 +68,12 @@ export default async function PersonnesPage() {
                   <div>
                     <div className="font-medium text-gray-900">{nom}</div>
                     <div className="flex flex-wrap gap-1 mt-1">
-                      {roles.length > 0
-                        ? roles.map((r) => (
-                            <span key={r} className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleColor[r]}`}>{r}</span>
-                          ))
-                        : <span className="text-xs text-gray-400">{p.type === "morale" ? "Personne morale" : "Personne physique"}</span>
-                      }
+                      <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${categorieColor[p.categorie as Categorie] ?? "bg-gray-100 text-gray-500"}`}>
+                        {categorieLabel[p.categorie as Categorie] ?? p.categorie}
+                      </span>
+                      {roles.map((r) => (
+                        <span key={r} className={`text-xs px-2 py-0.5 rounded-full font-medium ${roleColor[r]}`}>{r}</span>
+                      ))}
                     </div>
                   </div>
                 </div>

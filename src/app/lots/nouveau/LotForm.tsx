@@ -8,7 +8,7 @@ const labelCls = "block text-sm font-medium text-gray-700 mb-1";
 
 type Option = { id: string; label: string };
 
-export default function LotForm({ personneOptions, lotOptions }: { personneOptions: Option[]; lotOptions: Option[] }) {
+export default function LotForm({ residentOptions, lotOptions }: { residentOptions: Option[]; lotOptions: Option[] }) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -118,9 +118,9 @@ export default function LotForm({ personneOptions, lotOptions }: { personneOptio
       <hr className="border-gray-100" />
       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Personnes associées</p>
 
-      {selectOpt("proprietaire_id", "Propriétaire", personneOptions)}
-      {selectOpt("mandataire_id", "Mandataire", personneOptions)}
-      {selectOpt("locataire_id", "Locataire", personneOptions)}
+      {selectOpt("proprietaire_id", "Propriétaire", residentOptions)}
+      {selectOpt("mandataire_id", "Mandataire", residentOptions)}
+      {selectOpt("locataire_id", "Locataire", residentOptions)}
 
       {error && <p className="text-sm text-red-600">{error}</p>}
 
