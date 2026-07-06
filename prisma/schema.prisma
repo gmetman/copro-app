@@ -1,0 +1,120 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Coproprietaire {
+  id        String   @id @default(cuid())
+  nom       String
+  prenom    String
+  email     String?
+  telephone String?
+  lots      Lot[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("coproprietaires")
+}
+
+model Lot {
+  id               String          @id @default(cuid())
+  numero           String          @unique
+  type             TypeLot
+  etage            Int?
+  superficie       Float?
+  tantiemes        Int
+  coproprietaireId String?
+  coproprietaire   Coproprietaire? @relation(fields: [coproprietaireId], references: [id])
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  @@map("lots")
+}
+
+model Document {
+  id          String       @id @default(cuid())
+  titre       String
+  categorie   CategorieDoc
+  description String?
+  filename    String
+  fileUrl     String
+  fileSize    Int?
+  uploadedAt  DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("documents")
+}
+
+model Incident {
+  id           String            @id @default(cuid())
+  titre        String
+  description  String
+  statut       StatutIncident    @default(OUVERT)
+  priorite     PrioriteIncident  @default(NORMALE)
+  categorie    CategorieIncident
+  localisation String?
+  prestataire  String?
+  commentaires Commentaire[]
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  resolvedAt   DateTime?
+
+  @@map("incidents")
+}
+
+model Commentaire {
+  id         String   @id @default(cuid())
+  contenu    String
+  auteur     String
+  incidentId String
+  incident   Incident @relation(fields: [incidentId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+
+  @@map("commentaires")
+}
+
+enum TypeLot {
+  APPARTEMENT
+  PARKING
+  CAVE
+  LOCAL_COMMERCIAL
+  AUTRE
+}
+
+enum CategorieDoc {
+  PV_AG
+  CONTRAT
+  REGLEMENT
+  DEVIS
+  FACTURE
+  ASSURANCE
+  AUTRE
+}
+
+enum StatutIncident {
+  OUVERT
+  EN_COURS
+  RESOLU
+  FERME
+}
+
+enum PrioriteIncident {
+  BASSE
+  NORMALE
+  HAUTE
+  URGENTE
+}
+
+enum CategorieIncident {
+  PARTIES_COMMUNES
+  ASCENSEUR
+  TOITURE
+  PLOMBERIE
+  ELECTRICITE
+  ESPACES_VERTS
+  SECURITE
+  AUTRE
+}
