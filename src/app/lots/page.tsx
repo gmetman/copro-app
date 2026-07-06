@@ -2,31 +2,58 @@ import { supabase } from "@/lib/supabase";
 import { personneNom } from "@/lib/personne";
 import { Plus, Home, ParkingSquare, Vault, Store, Package } from "lucide-react";
 import Link from "next/link";
+import { FilterBar } from "@/components/FilterBar";
 
-const typeLotConfig: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; color: string }> = {
-  APPARTEMENT:      { label: "Appt.",       icon: Home,          color: "text-blue-500 bg-blue-50" },
-  PARKING:          { label: "Parking",     icon: ParkingSquare, color: "text-slate-500 bg-slate-50" },
-  CAVE:             { label: "Cave",        icon: Vault,         color: "text-amber-600 bg-amber-50" },
-  LOCAL_COMMERCIAL: { label: "Commerce",    icon: Store,         color: "text-green-600 bg-green-50" },
-  AUTRE:            { label: "Autre",       icon: Package,       color: "text-gray-500 bg-gray-50" },
+const typeLotConfig: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; color: string; filterColor: string }> = {
+  APPARTEMENT:      { label: "Appt.",    icon: Home,          color: "text-blue-500 bg-blue-50",   filterColor: "bg-blue-500 text-white border-blue-500" },
+  PARKING:          { label: "Parking",  icon: ParkingSquare, color: "text-slate-500 bg-slate-50", filterColor: "bg-slate-500 text-white border-slate-500" },
+  CAVE:             { label: "Cave",     icon: Vault,         color: "text-amber-600 bg-amber-50", filterColor: "bg-amber-500 text-white border-amber-500" },
+  LOCAL_COMMERCIAL: { label: "Commerce", icon: Store,         color: "text-green-600 bg-green-50", filterColor: "bg-green-600 text-white border-green-600" },
+  AUTRE:            { label: "Autre",    icon: Package,       color: "text-gray-500 bg-gray-50",   filterColor: "bg-gray-500 text-white border-gray-500" },
 };
 
-export default async function LotsPage() {
-  const { data: lots = [] } = await supabase
+export default async function LotsPage({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  const params = await searchParams;
+  const filterType = params.type ?? null;
+  const filterBat = params.batiment ?? null;
+
+  let query = supabase
     .from("lots")
-    .select(`
-      id, numero, type, batiment, porte, tantiemes, etage,
+    .select(`id, numero, type, batiment, porte, tantiemes, etage,
       proprietaire:proprietaire_id(id, type, description, contacts(*)),
-      locataire:locataire_id(id, type, description, contacts(*))
-    `)
+      locataire:locataire_id(id, type, description, contacts(*))`)
     .order("batiment", { ascending: true })
     .order("numero", { ascending: true });
 
+  if (filterType) query = query.eq("type", filterType);
+  if (filterBat) query = query.eq("batiment", filterBat);
+
+  const { data: lots = [] } = await query;
   const totalTantiemes = (lots ?? []).reduce((s, l) => s + (l.tantiemes ?? 0), 0);
+
+  const filterGroups = [
+    {
+      param: "type",
+      label: "Type",
+      options: Object.entries(typeLotConfig).map(([value, cfg]) => ({
+        value,
+        label: cfg.label,
+        color: cfg.filterColor,
+      })),
+    },
+    {
+      param: "batiment",
+      label: "Bâtiment",
+      options: [
+        { value: "A", label: "Bât. A" },
+        { value: "B", label: "Bât. B" },
+      ],
+    },
+  ];
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Lots</h1>
           <p className="text-gray-500">{lots?.length ?? 0} lot(s) · {totalTantiemes} tantièmes</p>
@@ -40,9 +67,11 @@ export default async function LotsPage() {
         </Link>
       </div>
 
+      <FilterBar groups={filterGroups} />
+
       {!lots?.length ? (
         <div className="text-center py-20 text-gray-400">
-          <p className="text-lg">Aucun lot enregistré.</p>
+          <p className="text-lg">Aucun lot correspondant.</p>
         </div>
       ) : (
         <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">

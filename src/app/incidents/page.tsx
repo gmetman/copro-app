@@ -2,6 +2,7 @@ import { supabase } from "@/lib/supabase";
 import { formatDate } from "@/lib/utils";
 import { Plus, ShieldCheck } from "lucide-react";
 import Link from "next/link";
+import { FilterBar } from "@/components/FilterBar";
 
 const statutLabel: Record<string, string> = {
   NOUVEAU: "Nouveau", EN_COURS: "En cours", CLOS: "Clos",
@@ -16,19 +17,50 @@ const prioriteColor: Record<string, string> = {
 };
 const prioriteOrder: Record<string, number> = { URGENTE: 4, HAUTE: 3, NORMALE: 2, BASSE: 1 };
 
-export default async function IncidentsPage() {
-  const { data: incidents = [] } = await supabase
+export default async function IncidentsPage({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  const params = await searchParams;
+  const filterStatut = params.statut ?? null;
+  const filterPriorite = params.priorite ?? null;
+
+  let query = supabase
     .from("incidents")
     .select("*, commentaires(count), interventions(count)")
     .order("created_at", { ascending: false });
+
+  if (filterStatut) query = query.eq("statut", filterStatut);
+  if (filterPriorite) query = query.eq("priorite", filterPriorite);
+
+  const { data: incidents = [] } = await query;
 
   const sorted = (incidents ?? []).sort(
     (a, b) => (prioriteOrder[b.priorite] ?? 0) - (prioriteOrder[a.priorite] ?? 0)
   );
 
+  const filterGroups = [
+    {
+      param: "statut",
+      label: "Statut",
+      options: [
+        { value: "NOUVEAU",  label: "Nouveau",   color: "bg-blue-600 text-white border-blue-600" },
+        { value: "EN_COURS", label: "En cours",  color: "bg-orange-500 text-white border-orange-500" },
+        { value: "CLOS",     label: "Clos",      color: "bg-gray-500 text-white border-gray-500" },
+      ],
+    },
+    {
+      param: "priorite",
+      label: "Priorité",
+      options: [
+        { value: "URGENTE", label: "Urgente", color: "bg-red-500 text-white border-red-500" },
+        { value: "HAUTE",   label: "Haute",   color: "bg-orange-400 text-white border-orange-400" },
+        { value: "NORMALE", label: "Normale", color: "bg-blue-400 text-white border-blue-400" },
+        { value: "BASSE",   label: "Basse",   color: "bg-gray-400 text-white border-gray-400" },
+      ],
+    },
+  ];
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Travaux & Incidents</h1>
           <p className="text-gray-500">{incidents?.length ?? 0} ticket(s)</p>
@@ -42,9 +74,11 @@ export default async function IncidentsPage() {
         </Link>
       </div>
 
+      <FilterBar groups={filterGroups} />
+
       {(incidents?.length ?? 0) === 0 ? (
         <div className="text-center py-20 text-gray-400">
-          <p className="text-lg">Aucun incident signalé.</p>
+          <p className="text-lg">Aucun incident correspondant.</p>
         </div>
       ) : (
         <div className="space-y-3">

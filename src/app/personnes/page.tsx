@@ -2,10 +2,19 @@ import { supabase } from "@/lib/supabase";
 import { personneNom, roleColor, categorieLabel, categorieColor, type Role, type Categorie } from "@/lib/personne";
 import { Plus, Building2, User } from "lucide-react";
 import Link from "next/link";
+import { FilterBar } from "@/components/FilterBar";
 
-export default async function PersonnesPage() {
+export default async function PersonnesPage({ searchParams }: { searchParams: Promise<Record<string, string>> }) {
+  const params = await searchParams;
+  const filterCategorie = params.categorie ?? null;
+  const filterType = params.type ?? null;
+
+  let query = supabase.from("personnes").select("*, contacts(*)").order("created_at", { ascending: false });
+  if (filterCategorie) query = query.eq("categorie", filterCategorie);
+  if (filterType) query = query.eq("type", filterType);
+
   const [{ data: personnes = [] }, { data: lots = [] }] = await Promise.all([
-    supabase.from("personnes").select("*, contacts(*)").order("created_at", { ascending: false }),
+    query,
     supabase.from("lots").select("proprietaire_id, locataire_id, mandataire_id"),
   ]);
 
@@ -15,7 +24,6 @@ export default async function PersonnesPage() {
     const asLocataire = (lots ?? []).filter((l) => l.locataire_id === id);
     const asMandataire = (lots ?? []).filter((l) => l.mandataire_id === id);
     const p = (personnes ?? []).find((x) => x.id === id);
-
     if (asProprietaire.length > 0) roles.push("propriétaire");
     if (asLocataire.length > 0) roles.push("locataire");
     if (asMandataire.length > 0) roles.push("mandataire");
@@ -25,9 +33,28 @@ export default async function PersonnesPage() {
     return roles;
   }
 
+  const filterGroups = [
+    {
+      param: "categorie",
+      label: "Catégorie",
+      options: [
+        { value: "RESIDENT",    label: "Propriétaires & Résidents", color: "bg-indigo-600 text-white border-indigo-600" },
+        { value: "FOURNISSEUR", label: "Fournisseurs",              color: "bg-amber-500 text-white border-amber-500" },
+      ],
+    },
+    {
+      param: "type",
+      label: "Type",
+      options: [
+        { value: "physique", label: "Personne physique" },
+        { value: "morale",   label: "Personne morale" },
+      ],
+    },
+  ];
+
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Personnes</h1>
           <p className="text-gray-500">{personnes?.length ?? 0} enregistrée(s)</p>
@@ -41,9 +68,11 @@ export default async function PersonnesPage() {
         </Link>
       </div>
 
+      <FilterBar groups={filterGroups} />
+
       {!personnes?.length ? (
         <div className="text-center py-20 text-gray-400">
-          <p className="text-lg">Aucune personne enregistrée.</p>
+          <p className="text-lg">Aucune personne correspondante.</p>
           <Link href="/personnes/nouveau" className="text-blue-600 hover:underline text-sm mt-2 inline-block">
             Ajouter la première
           </Link>
