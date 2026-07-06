@@ -14,6 +14,7 @@ export default function PersonneEditForm({ personne }: { personne: Personne }) {
   const [error, setError] = useState("");
   const [type, setType] = useState<"physique" | "morale">(personne.type);
   const [categorie, setCategorie] = useState<Categorie>(personne.categorie ?? "RESIDENT");
+  const [familleOrigine, setFamilleOrigine] = useState(personne.famille_origine ?? false);
   const [description, setDescription] = useState(personne.description ?? "");
 
   async function handleSubmit(e: React.FormEvent) {
@@ -23,7 +24,7 @@ export default function PersonneEditForm({ personne }: { personne: Personne }) {
     const res = await fetch(`/api/personnes/${personne.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ type, categorie, description: description || null }),
+      body: JSON.stringify({ type, categorie, famille_origine: familleOrigine, description: description || null }),
     });
     if (res.ok) {
       router.push(`/personnes/${personne.id}`);
@@ -89,6 +90,17 @@ export default function PersonneEditForm({ personne }: { personne: Personne }) {
           className={inputCls}
           placeholder={type === "morale" ? "Nom de la société" : "Notes optionnelles…"}
         />
+      </div>
+
+      <div className="flex items-center gap-3">
+        <input
+          id="famille_origine"
+          type="checkbox"
+          checked={familleOrigine}
+          onChange={(e) => setFamilleOrigine(e.target.checked)}
+          className="h-4 w-4 rounded border-gray-300 text-rose-600 focus:ring-rose-500"
+        />
+        <label htmlFor="famille_origine" className="text-sm text-gray-700">Famille d&apos;origine</label>
       </div>
 
       <p className="text-xs text-gray-400">Pour modifier les contacts, rendez-vous sur la fiche de la personne.</p>

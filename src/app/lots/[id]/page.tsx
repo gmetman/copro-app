@@ -65,6 +65,7 @@ export default async function LotPage({ params }: { params: Promise<{ id: string
         <Row label="Étage" value={lot.etage != null ? `${lot.etage}e étage` : null} />
         <Row label="Superficie" value={lot.superficie != null ? `${lot.superficie} m²` : null} />
         <Row label="Tantièmes" value={lot.tantiemes} />
+        {lot.particularites && <Row label="Particularités" value={lot.particularites} />}
         <Row label="Lot principal" value={
           lot.lot_principal
             ? <Link href={`/lots/${(lot.lot_principal as {id:string}).id}`} className="text-blue-600 hover:underline">

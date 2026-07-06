@@ -14,6 +14,7 @@ export default async function PersonnesPage({ searchParams }: { searchParams: Pr
   if (filterCategorie) query = query.eq("categorie", filterCategorie);
   if (filterType) query = query.eq("type", filterType);
   if (filterRole === "conseil_syndical") query = query.eq("conseil_syndical", true);
+  if (filterRole === "famille_origine") query = query.eq("famille_origine", true);
 
   const [{ data: allPersonnes = [] }, { data: lots = [] }] = await Promise.all([
     query,
@@ -30,12 +31,13 @@ export default async function PersonnesPage({ searchParams }: { searchParams: Pr
     if (asLocataire.length > 0) roles.push("locataire");
     if (asMandataire.length > 0) roles.push("mandataire");
     if (p?.conseil_syndical) roles.push("conseil syndical");
+    if (p?.famille_origine) roles.push("famille d'origine");
     if (asProprietaire.some((l) => l.locataire_id)) roles.push("bailleur");
     if (asLocataire.length > 0 || asProprietaire.some((l) => !l.locataire_id)) roles.push("résident");
     return roles;
   }
 
-  const personnes = filterRole && filterRole !== "conseil_syndical"
+  const personnes = filterRole && filterRole !== "conseil_syndical" && filterRole !== "famille_origine"
     ? (allPersonnes ?? []).filter((p) => {
         const roles = rolesFor(p.id);
         return roles.includes(filterRole as Role);
@@ -69,6 +71,7 @@ export default async function PersonnesPage({ searchParams }: { searchParams: Pr
         { value: "conseil_syndical", label: "Conseil syndical", color: "bg-yellow-500 text-white border-yellow-500" },
         { value: "bailleur",         label: "Bailleur",         color: "bg-orange-500 text-white border-orange-500" },
         { value: "résident",         label: "Résident",         color: "bg-teal-500 text-white border-teal-500" },
+        { value: "famille_origine",  label: "Famille d'origine", color: "bg-rose-500 text-white border-rose-500" },
       ],
     },
   ];

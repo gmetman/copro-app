@@ -19,11 +19,12 @@ export type Personne = {
   type: "physique" | "morale";
   categorie: Categorie;
   conseil_syndical: boolean;
+  famille_origine: boolean;
   contacts: Contact[];
   created_at: string;
 };
 
-export type Role = "propriétaire" | "locataire" | "mandataire" | "conseil syndical" | "bailleur" | "résident";
+export type Role = "propriétaire" | "locataire" | "mandataire" | "conseil syndical" | "bailleur" | "résident" | "famille d'origine";
 
 export function personneNom(p: { type: string; description: string | null; contacts: { prenom?: string | null; nom?: string | null }[] }): string {
   if (p.type === "morale") return p.description ?? "Sans nom";
@@ -45,6 +46,7 @@ export const roleColor: Record<Role, string> = {
   "conseil syndical": "bg-yellow-100 text-yellow-700",
   "bailleur":         "bg-orange-100 text-orange-700",
   "résident":         "bg-teal-100 text-teal-700",
+  "famille d'origine": "bg-rose-100 text-rose-700",
 };
 
 export const categorieLabel: Record<Categorie, string> = {

@@ -27,6 +27,7 @@ export default function LotForm({ residentOptions, lotOptions }: { residentOptio
       etage: get("etage") ? parseInt(get("etage")) : null,
       superficie: get("superficie") ? parseFloat(get("superficie")) : null,
       tantiemes: parseInt(get("tantiemes")) || 0,
+      particularites: get("particularites") || null,
       lot_principal_id: get("lot_principal_id") || null,
       proprietaire_id: get("proprietaire_id") || null,
       mandataire_id: get("mandataire_id") || null,
@@ -111,6 +112,11 @@ export default function LotForm({ residentOptions, lotOptions }: { residentOptio
           <label className={labelCls}>Tantièmes *</label>
           <input name="tantiemes" type="number" required defaultValue={0} className={inputCls} />
         </div>
+      </div>
+
+      <div>
+        <label className={labelCls}>Particularités</label>
+        <textarea name="particularites" rows={2} className={inputCls} placeholder="Ex : cave voûtée, accès PMR…" />
       </div>
 
       {selectOpt("lot_principal_id", "Lot principal", lotOptions)}
