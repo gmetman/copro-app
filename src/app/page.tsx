@@ -82,12 +82,13 @@ export default async function Home() {
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <div className="relative rounded-2xl overflow-hidden h-52 shadow-md">
+      <div className="relative rounded-2xl overflow-hidden h-52 shadow-md bg-gradient-to-br from-slate-700 to-slate-900">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/20_boulevard_du_Montparnasse,_Paris_15e_2.jpg/1280px-20_boulevard_du_Montparnasse,_Paris_15e_2.jpg"
+          src="https://upload.wikimedia.org/wikipedia/commons/4/46/20_boulevard_du_Montparnasse%2C_Paris_15e_2.jpg"
           alt="20 boulevard du Montparnasse"
           className="absolute inset-0 w-full h-full object-cover object-center"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 p-6">

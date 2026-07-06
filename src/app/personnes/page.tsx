@@ -8,12 +8,14 @@ export default async function PersonnesPage({ searchParams }: { searchParams: Pr
   const params = await searchParams;
   const filterCategorie = params.categorie ?? null;
   const filterType = params.type ?? null;
+  const filterRole = params.role ?? null;
 
   let query = supabase.from("personnes").select("*, contacts(*)").order("created_at", { ascending: false });
   if (filterCategorie) query = query.eq("categorie", filterCategorie);
   if (filterType) query = query.eq("type", filterType);
+  if (filterRole === "conseil_syndical") query = query.eq("conseil_syndical", true);
 
-  const [{ data: personnes = [] }, { data: lots = [] }] = await Promise.all([
+  const [{ data: allPersonnes = [] }, { data: lots = [] }] = await Promise.all([
     query,
     supabase.from("lots").select("proprietaire_id, locataire_id, mandataire_id"),
   ]);
@@ -23,7 +25,7 @@ export default async function PersonnesPage({ searchParams }: { searchParams: Pr
     const asProprietaire = (lots ?? []).filter((l) => l.proprietaire_id === id);
     const asLocataire = (lots ?? []).filter((l) => l.locataire_id === id);
     const asMandataire = (lots ?? []).filter((l) => l.mandataire_id === id);
-    const p = (personnes ?? []).find((x) => x.id === id);
+    const p = (allPersonnes ?? []).find((x) => x.id === id);
     if (asProprietaire.length > 0) roles.push("propriétaire");
     if (asLocataire.length > 0) roles.push("locataire");
     if (asMandataire.length > 0) roles.push("mandataire");
@@ -32,6 +34,13 @@ export default async function PersonnesPage({ searchParams }: { searchParams: Pr
     if (asLocataire.length > 0 || asProprietaire.some((l) => !l.locataire_id)) roles.push("résident");
     return roles;
   }
+
+  const personnes = filterRole && filterRole !== "conseil_syndical"
+    ? (allPersonnes ?? []).filter((p) => {
+        const roles = rolesFor(p.id);
+        return roles.includes(filterRole as Role);
+      })
+    : (allPersonnes ?? []);
 
   const filterGroups = [
     {
@@ -46,8 +55,20 @@ export default async function PersonnesPage({ searchParams }: { searchParams: Pr
       param: "type",
       label: "Type",
       options: [
-        { value: "physique", label: "Personne physique" },
-        { value: "morale",   label: "Personne morale" },
+        { value: "physique", label: "Physique" },
+        { value: "morale",   label: "Morale" },
+      ],
+    },
+    {
+      param: "role",
+      label: "Rôle",
+      options: [
+        { value: "propriétaire",     label: "Propriétaire",     color: "bg-blue-600 text-white border-blue-600" },
+        { value: "locataire",        label: "Locataire",        color: "bg-green-600 text-white border-green-600" },
+        { value: "mandataire",       label: "Mandataire",       color: "bg-purple-600 text-white border-purple-600" },
+        { value: "conseil_syndical", label: "Conseil syndical", color: "bg-yellow-500 text-white border-yellow-500" },
+        { value: "bailleur",         label: "Bailleur",         color: "bg-orange-500 text-white border-orange-500" },
+        { value: "résident",         label: "Résident",         color: "bg-teal-500 text-white border-teal-500" },
       ],
     },
   ];

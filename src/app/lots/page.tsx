@@ -16,6 +16,8 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
   const params = await searchParams;
   const filterType = params.type ?? null;
   const filterBat = params.batiment ?? null;
+  const filterPorte = params.porte ?? null;
+  const filterEtage = params.etage ?? null;
 
   let query = supabase
     .from("lots")
@@ -26,7 +28,13 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
     .order("numero", { ascending: true });
 
   if (filterType) query = query.eq("type", filterType);
-  if (filterBat) query = query.eq("batiment", filterBat);
+  if (filterBat === "AB") {
+    query = query.in("batiment", ["A", "B"]);
+  } else if (filterBat) {
+    query = query.eq("batiment", filterBat);
+  }
+  if (filterPorte) query = query.eq("porte", filterPorte);
+  if (filterEtage !== null) query = query.eq("etage", parseInt(filterEtage));
 
   const { data: lots = [] } = await query;
   const totalTantiemes = (lots ?? []).reduce((s, l) => s + (l.tantiemes ?? 0), 0);
@@ -45,8 +53,33 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
       param: "batiment",
       label: "Bâtiment",
       options: [
-        { value: "A", label: "Bât. A" },
-        { value: "B", label: "Bât. B" },
+        { value: "A",  label: "Bât. A" },
+        { value: "B",  label: "Bât. B" },
+        { value: "AB", label: "A + B" },
+      ],
+    },
+    {
+      param: "porte",
+      label: "Porte",
+      options: [
+        { value: "droite", label: "Droite" },
+        { value: "gauche", label: "Gauche" },
+        { value: "face",   label: "Face" },
+        { value: "cour",   label: "Cour" },
+        { value: "rue",    label: "Rue" },
+      ],
+    },
+    {
+      param: "etage",
+      label: "Étage",
+      options: [
+        { value: "0", label: "RDC" },
+        { value: "1", label: "1er" },
+        { value: "2", label: "2e" },
+        { value: "3", label: "3e" },
+        { value: "4", label: "4e" },
+        { value: "5", label: "5e" },
+        { value: "6", label: "6e" },
       ],
     },
   ];

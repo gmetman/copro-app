@@ -21,6 +21,7 @@ export default async function IncidentsPage({ searchParams }: { searchParams: Pr
   const params = await searchParams;
   const filterStatut = params.statut ?? null;
   const filterPriorite = params.priorite ?? null;
+  const filterAssurance = params.assurance ?? null;
 
   let query = supabase
     .from("incidents")
@@ -29,6 +30,7 @@ export default async function IncidentsPage({ searchParams }: { searchParams: Pr
 
   if (filterStatut) query = query.eq("statut", filterStatut);
   if (filterPriorite) query = query.eq("priorite", filterPriorite);
+  if (filterAssurance === "oui") query = query.eq("assurance_declaration", true);
 
   const { data: incidents = [] } = await query;
 
@@ -54,6 +56,13 @@ export default async function IncidentsPage({ searchParams }: { searchParams: Pr
         { value: "HAUTE",   label: "Haute",   color: "bg-orange-400 text-white border-orange-400" },
         { value: "NORMALE", label: "Normale", color: "bg-blue-400 text-white border-blue-400" },
         { value: "BASSE",   label: "Basse",   color: "bg-gray-400 text-white border-gray-400" },
+      ],
+    },
+    {
+      param: "assurance",
+      label: "Assurance",
+      options: [
+        { value: "oui", label: "Déclaration assurance", color: "bg-purple-600 text-white border-purple-600" },
       ],
     },
   ];
