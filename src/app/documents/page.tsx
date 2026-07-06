@@ -30,9 +30,9 @@ export default async function DocumentsPage() {
     .select("*")
     .order("uploaded_at", { ascending: false });
 
-  const byCategorie = (documents ?? []).reduce<Record<string, typeof documents>>((acc, doc) => {
+  const byCategorie = (documents ?? []).reduce<Record<string, NonNullable<typeof documents>>>((acc, doc) => {
     acc[doc.categorie] = acc[doc.categorie] ?? [];
-    acc[doc.categorie].push(doc);
+    acc[doc.categorie]!.push(doc);
     return acc;
   }, {});
 
