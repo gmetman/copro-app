@@ -31,7 +31,7 @@ export default async function IncidentsPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Travaux & Incidents</h1>
-          <p className="text-gray-500">{incidents.length} ticket(s)</p>
+          <p className="text-gray-500">{incidents?.length ?? 0} ticket(s)</p>
         </div>
         <Link
           href="/incidents/nouveau"
@@ -42,7 +42,7 @@ export default async function IncidentsPage() {
         </Link>
       </div>
 
-      {incidents.length === 0 ? (
+      {(incidents?.length ?? 0) === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <p className="text-lg">Aucun incident signalé.</p>
         </div>

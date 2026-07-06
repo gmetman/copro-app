@@ -14,7 +14,7 @@ export default async function ModifierLotPage({ params }: { params: Promise<{ id
 
   if (!lot) notFound();
 
-  const toOption = (p: Parameters<typeof personneNom>[0]) => ({ id: (p as { id: string }).id, label: personneNom(p) });
+  const toOption = (p: { id: string; type: string; description: string | null; contacts: { prenom?: string | null; nom?: string | null }[] }) => ({ id: p.id, label: personneNom(p) });
   const residents = (personnes ?? []).filter((p) => p.categorie === "RESIDENT").map(toOption);
 
   const lotOptions = (lots ?? [])

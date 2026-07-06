@@ -20,7 +20,7 @@ function Row({ label, value }: { label: string; value: React.ReactNode }) {
   );
 }
 
-function PersonneLink({ p }: { p: { id: string; type: string; description: string | null; contacts: { nom: string | null; prenom: string | null }[] } | null }) {
+function PersonneLink({ p }: { p: { id: string; type: string; description: string | null; contacts: { nom?: string | null; prenom?: string | null }[] } | null }) {
   if (!p) return <span className="text-gray-300">—</span>;
   return <Link href={`/personnes/${p.id}`} className="text-blue-600 hover:underline">{personneNom(p)}</Link>;
 }

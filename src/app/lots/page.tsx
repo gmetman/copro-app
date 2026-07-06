@@ -79,12 +79,12 @@ export default async function LotsPage() {
                     <td className="px-4 py-3 text-gray-500 text-xs">{l.porte ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-700">
                       {l.proprietaire
-                        ? <Link href={`/personnes/${(l.proprietaire as {id:string}).id}`} className="hover:underline text-blue-600">{personneNom(l.proprietaire as Parameters<typeof personneNom>[0])}</Link>
+                        ? <Link href={`/personnes/${(l.proprietaire as unknown as {id:string}).id}`} className="hover:underline text-blue-600">{personneNom(l.proprietaire as unknown as { type: string; description: string | null; contacts: { prenom?: string | null; nom?: string | null }[] })}</Link>
                         : <span className="text-gray-300">—</span>}
                     </td>
                     <td className="px-4 py-3 text-gray-700">
                       {l.locataire
-                        ? <Link href={`/personnes/${(l.locataire as {id:string}).id}`} className="hover:underline text-blue-600">{personneNom(l.locataire as Parameters<typeof personneNom>[0])}</Link>
+                        ? <Link href={`/personnes/${(l.locataire as unknown as {id:string}).id}`} className="hover:underline text-blue-600">{personneNom(l.locataire as unknown as { type: string; description: string | null; contacts: { prenom?: string | null; nom?: string | null }[] })}</Link>
                         : <span className="text-gray-300">—</span>}
                     </td>
                     <td className="px-4 py-3 text-right text-gray-700">{l.tantiemes ?? 0}</td>

@@ -41,7 +41,7 @@ export default async function DocumentsPage() {
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Documents</h1>
-          <p className="text-gray-500">{documents.length} fichier(s)</p>
+          <p className="text-gray-500">{documents?.length ?? 0} fichier(s)</p>
         </div>
         <Link
           href="/documents/nouveau"
@@ -52,7 +52,7 @@ export default async function DocumentsPage() {
         </Link>
       </div>
 
-      {documents.length === 0 ? (
+      {(documents?.length ?? 0) === 0 ? (
         <div className="text-center py-20 text-gray-400">
           <p className="text-lg">Aucun document enregistré.</p>
         </div>

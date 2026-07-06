@@ -25,7 +25,7 @@ export type Personne = {
 
 export type Role = "propriétaire" | "locataire" | "mandataire" | "conseil syndical" | "bailleur" | "résident";
 
-export function personneNom(p: Pick<Personne, "type" | "description" | "contacts">): string {
+export function personneNom(p: { type: string; description: string | null; contacts: { prenom?: string | null; nom?: string | null }[] }): string {
   if (p.type === "morale") return p.description ?? "Sans nom";
   const names = (p.contacts ?? [])
     .slice(0, 2)

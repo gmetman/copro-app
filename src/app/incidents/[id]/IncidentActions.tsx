@@ -256,7 +256,7 @@ export function IncidentActions({ incident, personnes }: { incident: Incident; p
                 </p>
                 {intv.prestataire && (
                   <p className="text-xs text-gray-500 mt-0.5">
-                    {personneNom(intv.prestataire as Parameters<typeof personneNom>[0])}
+                    {personneNom(intv.prestataire as { type: string; description: string | null; contacts: { prenom?: string | null; nom?: string | null }[] })}
                   </p>
                 )}
                 {intv.notes && <p className="text-xs text-gray-400 mt-0.5 italic">{intv.notes}</p>}
@@ -286,7 +286,7 @@ export function IncidentActions({ incident, personnes }: { incident: Incident; p
                 <select value={newPrestataireId} onChange={(e) => setNewPrestataireId(e.target.value)} className={inputCls}>
                   <option value="">— Sélectionner —</option>
                   {personnes.map((p) => (
-                    <option key={p.id} value={p.id}>{personneNom(p as Parameters<typeof personneNom>[0])}</option>
+                    <option key={p.id} value={p.id}>{personneNom(p as { type: string; description: string | null; contacts: { prenom?: string | null; nom?: string | null }[] })}</option>
                   ))}
                 </select>
               </div>
