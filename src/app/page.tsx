@@ -85,7 +85,7 @@ export default async function Home() {
       <div className="relative rounded-2xl overflow-hidden h-96 shadow-md bg-gradient-to-br from-slate-700 to-slate-900">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/immeuble.jpg"
+          src="/20MTPLandscape.jpg"
           alt="20 boulevard du Montparnasse"
           className="absolute inset-0 w-full h-full object-cover object-top"
         />
