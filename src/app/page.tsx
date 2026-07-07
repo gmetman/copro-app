@@ -82,12 +82,12 @@ export default async function Home() {
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <div className="relative rounded-2xl overflow-hidden h-96 shadow-md bg-gradient-to-br from-slate-700 to-slate-900">
+      <div className="relative rounded-2xl overflow-hidden shadow-md bg-gradient-to-br from-slate-700 to-slate-900">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/20MTPLandscape.jpg"
           alt="20 boulevard du Montparnasse"
-          className="absolute inset-0 w-full h-full object-cover object-top"
+          className="w-full block"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
         <div className="absolute bottom-0 left-0 p-6">
