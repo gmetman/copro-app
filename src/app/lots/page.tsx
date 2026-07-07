@@ -3,6 +3,7 @@ import { personneNom } from "@/lib/personne";
 import { Plus, Home, ParkingSquare, Vault, Store, Package } from "lucide-react";
 import Link from "next/link";
 import { FilterBar } from "@/components/FilterBar";
+import { SortableHeader } from "@/components/SortableHeader";
 
 const typeLotConfig: Record<string, { label: string; icon: React.ComponentType<{ className?: string }>; color: string; filterColor: string }> = {
   APPARTEMENT:      { label: "Appt.",    icon: Home,          color: "text-blue-500 bg-blue-50",   filterColor: "bg-blue-500 text-white border-blue-500" },
@@ -18,14 +19,18 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
   const filterBat = params.batiment ?? null;
   const filterPorte = params.porte ?? null;
   const filterEtage = params.etage ?? null;
+  const sortCol = params.sort ?? "numero";
+  const sortAsc = (params.dir ?? "asc") === "asc";
+
+  const validSortCols = ["numero", "type", "batiment", "porte", "etage", "tantiemes"];
+  const safeCol = validSortCols.includes(sortCol) ? sortCol : "numero";
 
   let query = supabase
     .from("lots")
     .select(`id, numero, type, batiment, porte, tantiemes, etage,
       proprietaire:proprietaire_id(id, type, description, contacts(*)),
       locataire:locataire_id(id, type, description, contacts(*))`)
-    .order("batiment", { ascending: true })
-    .order("numero", { ascending: true });
+    .order(safeCol, { ascending: sortAsc });
 
   if (filterType) query = query.eq("type", filterType);
   if (filterBat) query = query.eq("batiment", filterBat);
@@ -107,13 +112,14 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
           <table className="w-full text-sm">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Lot</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Type</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Bât.</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Porte</th>
+                <SortableHeader col="numero"    label="Lot" />
+                <SortableHeader col="type"      label="Type" />
+                <SortableHeader col="batiment"  label="Bât." />
+                <SortableHeader col="etage"     label="Étage" />
+                <SortableHeader col="porte"     label="Porte" />
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Propriétaire</th>
                 <th className="text-left px-4 py-3 font-medium text-gray-500">Locataire</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-500">Tantièmes</th>
+                <SortableHeader col="tantiemes" label="Tantièmes" align="right" />
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -134,6 +140,7 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
                       </span>
                     </td>
                     <td className="px-4 py-3 text-gray-700">{l.batiment ?? "—"}</td>
+                    <td className="px-4 py-3 text-gray-500 text-xs">{l.etage != null ? (l.etage === 0 ? "RDC" : `${l.etage}e`) : "—"}</td>
                     <td className="px-4 py-3 text-gray-500 text-xs">{l.porte ?? "—"}</td>
                     <td className="px-4 py-3 text-gray-700">
                       {l.proprietaire
