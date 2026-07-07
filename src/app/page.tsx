@@ -82,7 +82,7 @@ export default async function Home() {
   return (
     <div className="space-y-8">
       {/* Hero */}
-      <div className="relative rounded-2xl overflow-hidden h-52 shadow-md bg-gradient-to-br from-slate-700 to-slate-900">
+      <div className="relative rounded-2xl overflow-hidden h-80 shadow-md bg-gradient-to-br from-slate-700 to-slate-900">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

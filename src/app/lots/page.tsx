@@ -28,12 +28,8 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
     .order("numero", { ascending: true });
 
   if (filterType) query = query.eq("type", filterType);
-  if (filterBat === "AB") {
-    query = query.in("batiment", ["A", "B"]);
-  } else if (filterBat) {
-    query = query.eq("batiment", filterBat);
-  }
-  if (filterPorte) query = query.eq("porte", filterPorte);
+  if (filterBat) query = query.eq("batiment", filterBat);
+  if (filterPorte) query = query.ilike("porte", filterPorte);
   if (filterEtage !== null) query = query.eq("etage", parseInt(filterEtage));
 
   const { data: lots = [] } = await query;
@@ -55,7 +51,7 @@ export default async function LotsPage({ searchParams }: { searchParams: Promise
       options: [
         { value: "A",  label: "Bât. A" },
         { value: "B",  label: "Bât. B" },
-        { value: "AB", label: "A + B" },
+        { value: "AB", label: "Bât. AB" },
       ],
     },
     {
