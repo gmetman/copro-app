@@ -84,8 +84,9 @@ export default async function Home() {
       {/* Hero */}
       <div className="relative rounded-2xl overflow-hidden h-52 shadow-md bg-gradient-to-br from-slate-700 to-slate-900">
         {/* eslint-disable-next-line @next/next/no-img-element */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="https://upload.wikimedia.org/wikipedia/commons/4/46/20_boulevard_du_Montparnasse%2C_Paris_15e_2.jpg"
+          src="/immeuble.jpg"
           alt="20 boulevard du Montparnasse"
           className="absolute inset-0 w-full h-full object-cover object-center"
         />
